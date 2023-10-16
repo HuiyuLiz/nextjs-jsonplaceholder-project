@@ -1,5 +1,7 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 // services
 import { getUser, getUsers } from "@/services/user";
 import { getPosts } from "@/services/post";
@@ -25,23 +27,35 @@ export async function generateMetadata({
 }
 
 const UsersPage = async ({ params: { userId } }: Params) => {
-  const { data: user } = await getUser(userId);
-  const { data: posts } = await getPosts(userId);
+  const user = await getUser(userId);
+  const posts = await getPosts(userId);
+
+  if (!user?.data?.name) return notFound();
 
   return (
-    <main className="flex min-h-screen flex-col items-center p-24">
-      <div className="mb-5 text-xl font-semibold">{user?.name} </div>
+    <main className="flex min-h-screen flex-col items-center p-8 lg:p-24">
+      <div className="flex mb-5">
+        <div className="text-xl font-semibold mr-5">{user?.data?.name}</div>
+        <div className="group px-5">
+          <Link href={"/"} className={`mb-5 text-xl font-semibold`}>
+            Back
+            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
+              -&gt;
+            </span>
+          </Link>
+        </div>
+      </div>
 
       <Suspense fallback={<div>Loading...</div>}>
-        <PostList list={posts} />
+        <PostList list={posts?.data} />
       </Suspense>
     </main>
   );
 };
 
 export async function generateStaticParams() {
-  const { data: users } = await getUsers();
-  return users?.map((user) => ({
+  const users = await getUsers();
+  return users?.data?.map((user) => ({
     userId: user.id.toString(),
   }));
 }

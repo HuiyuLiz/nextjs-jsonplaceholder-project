@@ -5,8 +5,6 @@ import type {
   InternalAxiosRequestConfig,
 } from "axios";
 
-import { notFound } from "next/navigation";
-
 // create axios
 const service = axios.create({
   baseURL: process.env.HOST,
@@ -29,11 +27,6 @@ service.interceptors.response.use(
   },
   (error: AxiosError) => {
     console.log("error" + error); // for debug
-    if (error.response!.status == 404) {
-      notFound();
-    } else {
-      console.log(error);
-    }
     return undefined;
   }
 );

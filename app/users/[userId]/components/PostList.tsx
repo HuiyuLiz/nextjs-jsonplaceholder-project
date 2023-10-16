@@ -13,7 +13,7 @@ export const PostList = async ({ list }: Props) => {
       {list?.map((post) => {
         return (
           <Card key={post.id}>
-            <div className={`mb-5 text-xl font-semibold`}>{post.title}</div>
+            <div className={`mb-5 text-lg font-semibold`}>{post.title}</div>
             <p className={`m-0 max-w-[30ch] text-sm opacity-50 mt-3`}>
               {post.body}
             </p>
